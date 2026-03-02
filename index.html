@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Night Coordinator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f0f5f0 0%, #faf8f3 50%, #f9f6f1 100%);
+            min-height: 100vh;
+            padding: 24px;
+            color: #3a4a42;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Libre Caslon Display', serif;
+            font-size: 56px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            color: #2c3e35;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: #6b7967;
+            font-size: 15px;
+            margin-bottom: 32px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .btn-rose {
+            background-color: #a76a6a;
+            color: white;
+        }
+        .btn-rose:hover:not(:disabled) {
+            background-color: #8f5555;
+        }
+
+        .btn-emerald {
+            background-color: #6b8e7a;
+            color: white;
+        }
+        .btn-emerald:hover:not(:disabled) {
+            background-color: #5a7568;
+        }
+
+        .btn-blue {
+            background-color: #7a9e9e;
+            color: white;
+        }
+        .btn-blue:hover:not(:disabled) {
+            background-color: #68888a;
+        }
+
+        .btn-purple {
+            background-color: #8b8b8b;
+            color: white;
+        }
+        .btn-purple:hover:not(:disabled) {
+            background-color: #757575;
+        }
+
+        .btn:disabled {
+            background-color: #c9ccc6;
+            cursor: not-allowed;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: #fefdfb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(107, 142, 122, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .card-header h2 {
+            font-family: 'Libre Caslon Display', serif;
+            font-size: 44px;
+            font-weight: 400;
+            color: #2c3e35;
+            letter-spacing: 0.4px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #d4dcd5;
+            background: #f5f7f4;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            color: #6b8e7a;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: #e8f0ea;
+            border-color: #c9ccc6;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-top: 20px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: 600;
+            color: #8b9b8e;
+            padding: 12px 0;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1.1;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #e8ede7;
+            background: #fdfcfb;
+            font-size: 12px;
+            position: relative;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .calendar-day:hover {
+            border-color: #c9ccc6;
+            background: #faf9f7;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            border: none;
+        }
+
+        .calendar-day.today {
+            border-color: #a76a6a;
+            background: #f9eff0;
+            box-shadow: inset 0 0 0 1px rgba(167, 106, 106, 0.2);
+        }
+
+        .day-number {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #3a4a42;
+            font-size: 13px;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .day-number.today {
+            color: #8f5555;
+        }
+
+        .day-content {
+            font-size: 10px;
+            color: #8b9b8e;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .badge {
+            padding: 4px 6px;
+            border-radius: 2px;
+            text-align: center;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+            font-size: 10px;
+            letter-spacing: 0.3px;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .badge-pending {
+            background-color: #c9a584;
+        }
+
+        .badge-claimed {
+            background-color: #6b8e7a;
+        }
+
+        .close-btn {
+            font-size: 14px;
+            color: #b8bdb5;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: #a76a6a;
+        }
+
+        .sitter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sitter-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px;
+            background: #f0f8f4;
+            border: 1px solid #d4e6dd;
+            transition: all 0.2s;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .sitter-item:hover {
+            background: #e8f3ed;
+        }
+
+        .sitter-info p:first-child {
+            font-weight: 600;
+            color: #2c3e35;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .sitter-info p:last-child {
+            font-size: 13px;
+            color: #8b9b8e;
+            margin-top: 2px;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fefdfb;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            max-width: 420px;
+            width: 100%;
+            padding: 28px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(107, 142, 122, 0.15);
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-family: 'Libre Caslon Display', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: #2c3e35;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #5a6b60;
+            margin-bottom: 7px;
+            letter-spacing: 0.2px;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d4dcd5;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #faf9f7;
+            color: #3a4a42;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6b8e7a;
+            background: #fdfcfb;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 10px 16px;
+        }
+
+        .btn-secondary {
+            background: #f5f7f4;
+            color: #5a6b60;
+            border: 1px solid #d4dcd5;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+        .btn-secondary:hover {
+            background: #eef1ed;
+        }
+
+        .night-input-group {
+            background: #f7f9f6;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid #e8ede7;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .night-input-group label {
+            margin-bottom: 8px;
+        }
+
+        .time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #f9f8f5;
+            border: 1.5px solid #e8ede7;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .checkbox-label:hover {
+            background: #f7f5f1;
+            border-color: #d4dcd5;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            cursor: pointer;
+            accent-color: #6b8e7a;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 36px;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .success-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+
+        .success-title {
+            font-family: 'Libre Caslon Display', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: #6b8e7a;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+        }
+
+        .add-button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 12px;
+            border: 1px solid #d4dcd5;
+            background: #faf9f7;
+            color: #6b8e7a;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .add-button:hover {
+            background: #f5f7f4;
+            border-color: #c9ccc6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 16px;
+            }
+
+            .card {
+                padding: 20px;
+                margin-bottom: 24px;
+            }
+
+            .card-header h2 {
+                font-size: 22px;
+            }
+
+            .calendar-grid {
+                gap: 4px;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+                padding: 8px;
+                font-size: 11px;
+            }
+
+            .day-number {
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+
+            .badge {
+                font-size: 9px;
+                padding: 2px 4px;
+            }
+
+            .day-content {
+                font-size: 9px;
+            }
+
+            .day-header {
+                font-size: 11px;
+                padding: 8px 0;
+            }
+
+            .modal-content {
+                padding: 20px;
+                max-width: calc(100% - 32px);
+            }
+
+            .modal-header h2 {
+                font-size: 20px;
+            }
+
+            .night-input-group {
+                padding: 12px;
+            }
+
+            .checkbox-label {
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .sitter-item {
+                padding: 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .sitter-info {
+                width: 100%;
+            }
+
+            .close-btn {
+                align-self: flex-end;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .calendar-grid {
+                gap: 2px;
+            }
+
+            .calendar-day {
+                min-height: 70px;
+                padding: 6px;
+            }
+
+            .day-number {
+                font-size: 11px;
+            }
+
+            .day-header {
+                font-size: 10px;
+            }
+
+            .btn {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .nav-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .modal-content {
+                padding: 16px;
+                margin: 16px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .modal-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Date Night Coordinator</h1>
+        <p class="subtitle">Plan babysitters for your upcoming date nights</p>
+
+        <!-- Main Calendar View -->
+        <div id="calendarView">
+            <div class="controls">
+                <button class="btn btn-rose" onclick="showModal('batchModal')">✚ Add Date Nights</button>
+                <button class="btn btn-emerald" onclick="showModal('sitterModal')">✚ Add Sitter</button>
+                <button class="btn btn-blue" onclick="showModal('blastModal')" id="blastBtn">◆ Blast Sitters</button>
+                <button class="btn btn-purple" onclick="switchToBooking()">◉ Preview Booking</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="monthName"></h2>
+                    <div class="nav-buttons">
+                        <button class="nav-btn" onclick="previousMonth()">←</button>
+                        <button class="nav-btn" onclick="nextMonth()">→</button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+
+            <div class="card hidden" id="sittersCard">
+                <h3 style="font-size: 20px; font-weight: 400; color: #2c3e35; margin-bottom: 16px; letter-spacing: 0.3px;">Your Babysitters</h3>
+                <div class="sitter-list" id="sittersList"></div>
+            </div>
+        </div>
+
+        <!-- Booking View -->
+        <div id="bookingView" class="hidden">
+            <button class="btn btn-secondary" onclick="switchToCalendar()" style="margin-bottom: 24px;">← Back to Calendar</button>
+            
+            <div class="card">
+                <h2 style="font-size: 28px; font-weight: 400; color: #2c3e35; margin-bottom: 8px;">Available Date Nights</h2>
+                <p style="color: #6b7967; margin-bottom: 24px; font-size: 15px;">Select the nights you'd like to babysit, and we'll confirm your bookings!</p>
+
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="bookingSitterName" placeholder="e.g., Sarah">
+                </div>
+
+                <div id="availableNightsContainer" style="margin-bottom: 24px;"></div>
+                <div id="claimedNightsContainer" style="margin-bottom: 24px;"></div>
+
+                <button class="btn btn-rose" style="width: 100%; padding: 12px;" onclick="submitBooking()">Confirm Nights</button>
+                <div id="successMessage" class="success-message hidden">
+                    <div class="success-icon">✓</div>
+                    <div class="success-title">All Set!</div>
+                    <p id="successText" style="color: #6b7967;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Add Modal -->
+    <div class="modal" id="batchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Date Nights</h2>
+                <button class="close-btn" onclick="hideModal('batchModal')">×</button>
+            </div>
+
+            <div id="nightInputs"></div>
+
+            <button class="add-button" onclick="addNightInput()">+ Add Another</button>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="hideModal('batchModal')">Cancel</button>
+                <button class="btn btn-rose" onclick="submitBatchAdd()">Add Nights</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sitter Modal -->
+    <div class="modal" id="sitterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Babysitter</h2>
+                <button class="close-btn" onclick="hideModal('sitterModal')">×</button>
+            </div>
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="sitterName" placeholder="e.g., Sarah">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="sitterPhone" placeholder="e.g., (555) 123-4567">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="hideModal('sitterModal')">Cancel</button>
+                <button class="btn btn-emerald" onclick="addSitter()">Add Sitter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blast Modal -->
+    <div class="modal" id="blastModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Blast Sitters</h2>
+                <button class="close-btn" onclick="hideModal('blastModal')">×</button>
+            </div>
+
+            <p id="blastCount" style="font-size: 12px; color: #6b7967; margin-bottom: 16px;"></p>
+            <div id="blastMessage" style="padding: 16px; background: #f0f8f4; border: 1px solid #d4e6dd; margin-bottom: 16px; font-size: 12px; color: #3a4a42; line-height: 1.6;"></div>
+
+            <div id="sittersList2" style="margin-bottom: 24px; font-size: 12px; color: #6b7967;"></div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="copyBtn" onclick="copyMessage()" style="flex: 1;">◈ Copy</button>
+                <button class="btn btn-blue" onclick="sendSms()" style="flex: 1;">Open SMS</button>
+            </div>
+
+            <p style="font-size: 11px; color: #8b9b8e; text-align: center; margin-top: 16px;">You'll review and send the message manually from your phone.</p>
+        </div>
+    </div>
+
+    <script>
+        // Convert 24-hour time to 12-hour EST
+        function formatTime12Hour(time24) {
+            if (!time24) return '';
+            const [hours, minutes] = time24.split(':');
+            let hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            hour = hour % 12 || 12;
+            return `${hour}:${minutes} ${ampm}`;
+        }
+
+        let state = {
+            currentDate: new Date(),
+            dateNights: [],
+            sitters: [],
+            bookingToken: 'date-night-' + Math.random().toString(36).substr(2, 9),
+            viewMode: 'calendar',
+            selectedNights: [],
+            bookingSitterName: ''
+        };
+
+        // Load from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('dateNightData');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    state.dateNights = data.dateNights || [];
+                    state.sitters = data.sitters || [];
+                    state.bookingToken = data.bookingToken || state.bookingToken;
+                } catch (e) {
+                    console.log('Could not load saved data');
+                }
+            }
+            render();
+        }
+
+        // Save to localStorage
+        function saveState() {
+            localStorage.setItem('dateNightData', JSON.stringify({
+                dateNights: state.dateNights,
+                sitters: state.sitters,
+                bookingToken: state.bookingToken
+            }));
+        }
+
+        function render() {
+            if (state.viewMode === 'calendar') {
+                renderCalendar();
+                renderSitters();
+            } else {
+                renderBooking();
+            }
+        }
+
+        function renderCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('monthName').textContent = monthNames[state.currentDate.getMonth()] + ' ' + state.currentDate.getFullYear();
+
+            const daysInMonth = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() + 1, 0).getDate();
+            const firstDay = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth(), 1).getDay();
+
+            let html = '';
+
+            // Day headers
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(day => {
+                html += `<div class="day-header">${day}</div>`;
+            });
+
+            // Empty days
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div class="calendar-day empty"></div>`;
+            }
+
+            // Days with dates
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth(), day).toISOString().split('T')[0];
+                const night = state.dateNights.find(n => n.date === dateStr);
+                const isToday = day === today.getDate() && state.currentDate.getMonth() === today.getMonth() && state.currentDate.getFullYear() === today.getFullYear();
+
+                let classNames = 'calendar-day';
+                if (isToday) classNames += ' today';
+
+                let content = `<div class="day-number ${isToday ? 'today' : ''}">${day}</div>`;
+                if (night) {
+                    const badgeClass = night.claimedBy ? 'badge-claimed' : 'badge-pending';
+                    const badgeText = night.claimedBy ? `• ${night.claimedBy}` : 'Pending';
+                    content += `<div class="badge ${badgeClass}">${badgeText}</div>`;
+                    content += `<div class="day-content">${formatTime12Hour(night.startTime)}</div>`;
+                    content += `<button class="close-btn" onclick="removeNight(${night.id})">×</button>`;
+                }
+                html += `<div class="${classNames}">${content}</div>`;
+            }
+
+            document.getElementById('calendarGrid').innerHTML = html;
+            document.getElementById('blastBtn').disabled = state.dateNights.length === 0;
+        }
+
+        function renderSitters() {
+            const sittersCard = document.getElementById('sittersCard');
+            if (state.sitters.length === 0) {
+                sittersCard.classList.add('hidden');
+                return;
+            }
+            sittersCard.classList.remove('hidden');
+            let html = '';
+            state.sitters.forEach(sitter => {
+                html += `
+                    <div class="sitter-item">
+                        <div class="sitter-info">
+                            <p>${sitter.name}</p>
+                            <p>${sitter.phone}</p>
+                        </div>
+                        <button class="close-btn" onclick="removeSitter(${sitter.id})">×</button>
+                    </div>
+                `;
+            });
+            document.getElementById('sittersList').innerHTML = html;
+        }
+
+        function renderBooking() {
+            const available = state.dateNights.filter(n => !n.claimedBy);
+            const claimed = state.dateNights.filter(n => n.claimedBy);
+
+            let availableHtml = '<h3 style="font-weight: 600; margin-bottom: 12px; color: #2c3e35;">Available Nights</h3>';
+            if (available.length === 0) {
+                availableHtml += '<p style="color: #6b7967;">No available nights at the moment.</p>';
+            } else {
+                available.forEach(night => {
+                    const checked = state.selectedNights.includes(night.id) ? 'checked' : '';
+                    const dateStr = new Date(night.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+                    availableHtml += `
+                        <label class="checkbox-label">
+                            <input type="checkbox" ${checked} onchange="toggleNight(${night.id})">
+                            <div>
+                                <div style="font-weight: 600; color: #2c3e35;">${dateStr}</div>
+                                <div style="color: #6b7967;">${formatTime12Hour(night.startTime)} – ${formatTime12Hour(night.endTime)}</div>
+                                ${night.notes ? `<div style="font-size: 11px; color: #8b9b8e;">Note: ${night.notes}</div>` : ''}
+                            </div>
+                        </label>
+                    `;
+                });
+            }
+            document.getElementById('availableNightsContainer').innerHTML = availableHtml;
+
+            let claimedHtml = '';
+            if (claimed.length > 0) {
+                claimedHtml = '<h3 style="font-weight: 600; margin-bottom: 12px; color: #2c3e35;">Already Booked</h3>';
+                claimed.forEach(night => {
+                    const dateStr = new Date(night.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+                    claimedHtml += `
+                        <div style="padding: 12px; background: #f0f8f4; border: 1px solid #d4e6dd; margin-bottom: 12px; opacity: 0.6;">
+                            <div style="font-weight: 600; color: #2c3e35;">${dateStr}</div>
+                            <div style="font-size: 12px; color: #6b7967;">${formatTime12Hour(night.startTime)} – ${formatTime12Hour(night.endTime)}</div>
+                            <div style="font-size: 11px; color: #6b8e7a; font-weight: 600;">• Claimed by ${night.claimedBy}</div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('claimedNightsContainer').innerHTML = claimedHtml;
+        }
+
+        function showModal(id) {
+            document.getElementById(id).classList.add('show');
+            if (id === 'blastModal') {
+                updateBlastModal();
+            } else if (id === 'batchModal') {
+                const nightInputs = document.getElementById('nightInputs');
+                if (nightInputs.children.length === 0) {
+                    addNightInput();
+                }
+            }
+        }
+
+        function hideModal(id) {
+            document.getElementById(id).classList.remove('show');
+            if (id === 'batchModal') {
+                document.getElementById('nightInputs').innerHTML = '';
+            }
+        }
+
+        function addNightInput() {
+            const container = document.getElementById('nightInputs');
+            const index = container.children.length;
+            const html = `
+                <div class="night-input-group">
+                    <label>Date</label>
+                    <input type="date" id="night${index}Date" class="nightInput">
+                    <div class="time-row">
+                        <div>
+                            <label>Start</label>
+                            <input type="time" id="night${index}Start" class="nightInput" value="19:00">
+                        </div>
+                        <div>
+                            <label>End</label>
+                            <input type="time" id="night${index}End" class="nightInput" value="22:00">
+                        </div>
+                    </div>
+                    <label>Notes (optional)</label>
+                    <input type="text" id="night${index}Notes" class="nightInput" placeholder="e.g., kids in bed by 8pm">
+                    ${index > 0 ? `<button type="button" class="close-btn" style="margin-top: 8px;" onclick="this.parentElement.remove()">Remove</button>` : ''}
+                </div>
+            `;
+            container.innerHTML += html;
+        }
+
+        function submitBatchAdd() {
+            const inputs = document.querySelectorAll('.nightInput');
+            const nightInputs = [];
+            let index = 0;
+            
+            // Group inputs by night
+            for (let i = 0; i < inputs.length; i += 4) {
+                const dateInput = document.getElementById(`night${index}Date`);
+                const startInput = document.getElementById(`night${index}Start`);
+                const endInput = document.getElementById(`night${index}End`);
+                const notesInput = document.getElementById(`night${index}Notes`);
+                
+                if (dateInput && dateInput.value) {
+                    state.dateNights.push({
+                        id: Date.now() + Math.random(),
+                        date: dateInput.value,
+                        startTime: startInput.value || '19:00',
+                        endTime: endInput.value || '22:00',
+                        notes: notesInput.value || '',
+                        claimedBy: null
+                    });
+                }
+                index++;
+            }
+            
+            saveState();
+            render();
+            hideModal('batchModal');
+        }
+
+        function addSitter() {
+            const name = document.getElementById('sitterName').value.trim();
+            const phone = document.getElementById('sitterPhone').value.trim();
+            if (name && phone) {
+                state.sitters.push({ id: Date.now(), name, phone });
+                document.getElementById('sitterName').value = '';
+                document.getElementById('sitterPhone').value = '';
+                saveState();
+                render();
+                hideModal('sitterModal');
+            }
+        }
+
+        function removeSitter(id) {
+            state.sitters = state.sitters.filter(s => s.id !== id);
+            saveState();
+            render();
+        }
+
+        function removeNight(id) {
+            state.dateNights = state.dateNights.filter(n => n.id !== id);
+            saveState();
+            render();
+        }
+
+        function updateBlastModal() {
+            const count = state.sitters.length;
+            document.getElementById('blastCount').textContent = `This message will be sent to ${count} babysitter${count !== 1 ? 's' : ''}:`;
+
+            const bookingUrl = window.location.href.split('?')[0] + `?booking=${state.bookingToken}`;
+            const message = `Hey! We have some date nights coming up and would love your help. Tap the link to see the available nights and claim the ones that work for you: ${bookingUrl}`;
+
+            document.getElementById('blastMessage').textContent = message;
+
+            let sittersHtml = '';
+            state.sitters.forEach(s => {
+                sittersHtml += `<div>• ${s.name} (${s.phone})</div>`;
+            });
+            document.getElementById('sittersList2').innerHTML = sittersHtml;
+        }
+
+        function copyMessage() {
+            const bookingUrl = window.location.href.split('?')[0] + `?booking=${state.bookingToken}`;
+            const message = `Hey! We have some date nights coming up and would love your help. Tap the link to see the available nights and claim the ones that work for you: ${bookingUrl}`;
+            navigator.clipboard.writeText(message);
+            const btn = document.getElementById('copyBtn');
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => {
+                btn.textContent = '📋 Copy';
+            }, 2000);
+        }
+
+        function sendSms() {
+            const bookingUrl = window.location.href.split('?')[0] + `?booking=${state.bookingToken}`;
+            const message = `Hey! We have some date nights coming up and would love your help. Tap the link to see the available nights and claim the ones that work for you: ${bookingUrl}`;
+            const encoded = encodeURIComponent(message);
+            window.location.href = `sms:?&body=${encoded}`;
+        }
+
+        function switchToBooking() {
+            state.viewMode = 'booking';
+            state.selectedNights = [];
+            state.bookingSitterName = '';
+            document.getElementById('bookingSitterName').value = '';
+            document.getElementById('successMessage').classList.add('hidden');
+            render();
+            document.getElementById('calendarView').classList.add('hidden');
+            document.getElementById('bookingView').classList.remove('hidden');
+        }
+
+        function switchToCalendar() {
+            state.viewMode = 'calendar';
+            render();
+            document.getElementById('bookingView').classList.add('hidden');
+            document.getElementById('calendarView').classList.remove('hidden');
+        }
+
+        function toggleNight(id) {
+            if (state.selectedNights.includes(id)) {
+                state.selectedNights = state.selectedNights.filter(n => n !== id);
+            } else {
+                state.selectedNights.push(id);
+            }
+        }
+
+        function submitBooking() {
+            state.bookingSitterName = document.getElementById('bookingSitterName').value.trim();
+            if (!state.bookingSitterName || state.selectedNights.length === 0) {
+                alert('Please enter your name and select at least one night');
+                return;
+            }
+
+            state.selectedNights.forEach(nightId => {
+                const night = state.dateNights.find(n => n.id === nightId);
+                if (night) {
+                    night.claimedBy = state.bookingSitterName;
+                }
+            });
+
+            saveState();
+            document.getElementById('availableNightsContainer').innerHTML = '';
+            document.getElementById('claimedNightsContainer').innerHTML = '';
+            document.getElementById('successMessage').classList.remove('hidden');
+            const count = state.selectedNights.length;
+            document.getElementById('successText').textContent = `Thanks ${state.bookingSitterName}! Your ${count} booking${count !== 1 ? 's' : ''} are confirmed. The family will see them right away.`;
+
+            setTimeout(() => {
+                switchToCalendar();
+            }, 2000);
+        }
+
+        function previousMonth() {
+            state.currentDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() - 1);
+            render();
+        }
+
+        function nextMonth() {
+            state.currentDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() + 1);
+            render();
+        }
+
+        // Initialize
+        loadState();
+    </script>
+</body>
+</html>
